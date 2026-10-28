@@ -6,43 +6,33 @@ import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Command,
-  LayoutDashboardIcon,
-  Loader2Icon,
-  LogOutIcon,
-  PackageIcon,
-  ServerIcon,
-  ShieldCheckIcon,
-  ShoppingCartIcon,
-  SquareTerminal,
-  UsersIcon,
+  LayoutDashboard,
+  Package,
+  Settings,
+  ShieldAlert,
+  ShoppingCart,
+  Users,
 } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/features/auth/useAuth";
-import { getInitials } from "@/lib/format";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 
 const data = {
   navMain: [
     {
-      title: "Panel",
+      title: "Dashboard",
       url: "#",
-      icon: SquareTerminal,
+      icon: LayoutDashboard,
       isActive: true,
       items: [
         { title: "General", url: "/dashboard" }
@@ -51,16 +41,47 @@ const data = {
     {
       title: "Catálogo",
       url: "#",
-      icon: SquareTerminal,
+      icon: Package,
       items: [
-        { title: "Productos", url: "/dashboard/productos" },
-        { title: "Pedidos", url: "/dashboard/pedidos" }
+        { title: "Productos", url: "#" },
+        { title: "Categorías", url: "#" },
+        { title: "Inventario", url: "#" }
+      ]
+    },
+    {
+      title: "Operaciones",
+      url: "#",
+      icon: ShoppingCart,
+      items: [
+        { title: "Pedidos", url: "#" },
+        { title: "Envíos", url: "#" },
+        { title: "Descuentos", url: "#" }
+      ]
+    },
+    {
+      title: "Clientes",
+      url: "#",
+      icon: Users,
+      items: [
+        { title: "Clientes", url: "#" },
+        { title: "Reseñas", url: "#" },
+      ]
+    },
+    {
+      title: "Configuración",
+      url: "#",
+      icon: Settings,
+      items: [
+        { title: "General", url: "#" },
+        { title: "Pagos", url: "#" },
+        { title: "Impuestos", url: "#" },
+        { title: "Usuarios", url: "#" },
       ]
     },
     {
       title: "Administración",
       url: "#",
-      icon: SquareTerminal,
+      icon: ShieldAlert,
       items: [
         { title: "Clientes", url: "/dashboard/clientes" },
         { title: "Sistema", url: "/dashboard/sistema" }

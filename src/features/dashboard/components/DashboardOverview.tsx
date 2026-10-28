@@ -24,24 +24,8 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/features/auth/useAuth";
 import { API_URL } from "@/lib/config";
 import { formatDateTime, formatRole, getInitials } from "@/lib/format";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
-const MODULES = [
-  {
-    title: "Productos",
-    icon: PackageIcon,
-    description: "Gestión del catálogo, precios y stock.",
-  },
-  {
-    title: "Pedidos",
-    icon: ShoppingCartIcon,
-    description: "Seguimiento de órdenes y estados de envío.",
-  },
-  {
-    title: "Clientes",
-    icon: UsersIcon,
-    description: "Consulta de usuarios registrados y sus roles.",
-  },
-];
 
 export function DashboardOverview() {
   const { user } = useAuth();
@@ -63,6 +47,12 @@ export function DashboardOverview() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <div className="flex items-center gap-4">
+              <Avatar >
+                <AvatarImage
+                  src={user.imageUrl}
+                  alt={user.fullName}
+                />
+              </Avatar>
               <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-base font-semibold text-primary-foreground">
                 {getInitials(user.fullName, user.email)}
               </span>
@@ -133,28 +123,6 @@ export function DashboardOverview() {
             </Button>
           </CardFooter>
         </Card>
-      </div>
-
-      <div>
-        <h2 className="mb-3 text-sm font-medium text-muted-foreground">
-          Módulos del e-commerce
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {MODULES.map(({ title, icon: Icon, description }) => (
-            <Card key={title}>
-              <CardHeader>
-                <span className="mb-1 flex size-9 items-center justify-center rounded-lg bg-muted">
-                  <Icon className="size-4" />
-                </span>
-                <CardTitle>{title}</CardTitle>
-                <CardDescription>{description}</CardDescription>
-                <CardAction>
-                  <Badge variant="secondary">Próximamente</Badge>
-                </CardAction>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
       </div>
     </div>
   );

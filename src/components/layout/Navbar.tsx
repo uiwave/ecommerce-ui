@@ -73,7 +73,7 @@ export function Navbar() {
   const initials = user ? getInitials(user.fullName, user.email) : "";
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-4">
         <Brand />
         <nav className="ml-2 hidden items-center gap-1 md:flex">
