@@ -107,11 +107,9 @@ export function AdminView() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Panel de administración
-          </h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Sistema</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Consumo de endpoints protegidos por rol ADMIN.
+            Estado de la API y endpoints protegidos por rol ADMIN.
           </p>
         </div>
         <Badge className="gap-1">

@@ -86,8 +86,8 @@ export function Navbar() {
             </NavLink>
           )}
           {user?.role === "ADMIN" && (
-            <NavLink href="/admin" active={pathname.startsWith("/admin")}>
-              Admin
+            <NavLink href="/dashboard" active={pathname.startsWith("/dashboard")}>
+              Dashboard
             </NavLink>
           )}
         </nav>
@@ -118,7 +118,7 @@ export function Navbar() {
                 )}
                 {user?.role === "ADMIN" && (
                   <DropdownMenuItem asChild>
-                    <Link href="/admin">Panel admin</Link>
+                    <Link href="/dashboard">Dashboard</Link>
                   </DropdownMenuItem>
                 )}
               </DropdownMenuGroup>
@@ -175,8 +175,8 @@ export function Navbar() {
                   </DropdownMenuItem>
                   {user.role === "ADMIN" && (
                     <DropdownMenuItem asChild>
-                      <Link href="/admin">
-                        <LayoutDashboardIcon /> Panel admin
+                      <Link href="/dashboard">
+                        <LayoutDashboardIcon /> Dashboard
                       </Link>
                     </DropdownMenuItem>
                   )}

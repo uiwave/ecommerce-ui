@@ -57,7 +57,9 @@ Interfaz web del e-commerce de Uiwave, construida con **Next.js 16 (App Router)*
 ```
 src/app/                    Rutas (Server Components por defecto)
 ├── (auth)/                 Login y registro con layout centrado
-├── (shop)/                 Inicio, Mi cuenta y Admin con Navbar
+├── (shop)/                 Tienda: Inicio y Mi cuenta con Navbar
+├── dashboard/              Panel admin con sidebar: General, Sistema y módulos futuros
+├── admin/page.tsx          Redirección heredada a /dashboard
 ├── layout.tsx              Providers (tema + auth), fuentes, Toaster
 ├── error.tsx               Error boundary global
 ├── loading.tsx             Skeleton de carga
@@ -72,7 +74,7 @@ src/components/
 src/features/
 ├── auth/                   AuthProvider, useAuth, RequireAuth, schemas zod, formularios
 ├── account/                Vista de perfil
-└── admin/                  Panel de administración
+└── dashboard/              Guard ADMIN, sidebar, shell, General y Sistema
 
 src/lib/
 ├── api/client.ts           Cliente HTTP único: Bearer, refresh con rotación, 401
