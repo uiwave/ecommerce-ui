@@ -10,6 +10,7 @@ import {
   Loader2Icon,
   LogOutIcon,
   MenuIcon,
+  ShoppingBagIcon,
   UserRoundIcon,
 } from "lucide-react";
 
@@ -25,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CartButton } from "@/features/cart/components/CartButton";
 import { useAuth } from "@/features/auth/useAuth";
 import { formatRole, getInitials } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -80,9 +82,15 @@ export function Navbar() {
           <NavLink href="/" active={pathname === "/"}>
             Inicio
           </NavLink>
+          <NavLink
+            href="/productos"
+            active={pathname.startsWith("/productos")}
+          >
+            Productos
+          </NavLink>
           {isAuthenticated && (
-            <NavLink href="/cuenta" active={pathname.startsWith("/cuenta")}>
-              Mi cuenta
+            <NavLink href="/pedidos" active={pathname.startsWith("/pedidos")}>
+              Mis pedidos
             </NavLink>
           )}
           {user?.role === "ADMIN" && (
@@ -93,6 +101,7 @@ export function Navbar() {
         </nav>
 
         <div className="ml-auto flex items-center gap-1">
+          <CartButton />
           <ThemeToggle />
 
           <DropdownMenu>
@@ -111,6 +120,14 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <Link href="/">Inicio</Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/productos">Productos</Link>
+                </DropdownMenuItem>
+                {isAuthenticated && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/pedidos">Mis pedidos</Link>
+                  </DropdownMenuItem>
+                )}
                 {isAuthenticated && (
                   <DropdownMenuItem asChild>
                     <Link href="/cuenta">Mi cuenta</Link>
@@ -168,6 +185,11 @@ export function Navbar() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
+                  <DropdownMenuItem asChild>
+                    <Link href="/pedidos">
+                      <ShoppingBagIcon /> Mis pedidos
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/cuenta">
                       <UserRoundIcon /> Mi cuenta

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/features/auth/AuthProvider";
 import "./globals.css";
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     template: "%s · Uiwave Commerce",
   },
   description:
-    "Interfaz de autenticación para el e-commerce de Uiwave, conectada a una API Spring Boot con JWT.",
+    "E-commerce completo (catálogo, carrito, checkout y pedidos) con panel de administración, conectado a una API Spring Boot con JWT.",
 };
 
 export default function RootLayout({
@@ -36,10 +37,12 @@ export default function RootLayout({
     >
       <body className="flex min-h-svh flex-col">
         <ThemeProvider>
-          <AuthProvider>
-            {children}
-            <Toaster position="top-center" richColors />
-          </AuthProvider>
+          <QueryProvider>
+            <AuthProvider>
+              {children}
+              <Toaster position="top-center" richColors />
+            </AuthProvider>
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

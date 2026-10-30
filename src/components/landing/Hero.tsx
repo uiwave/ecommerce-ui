@@ -2,12 +2,9 @@
 
 import Link from "next/link";
 
-import { useAuth } from "@/features/auth/useAuth";
 import { ArrowRight, Play } from "lucide-react";
 
 export function Hero() {
-  const { user, isLoading, isAuthenticated } = useAuth();
-
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative grid items-center gap-8 py-16 lg:grid-cols-2 lg:py-24 xl:py-37.5">

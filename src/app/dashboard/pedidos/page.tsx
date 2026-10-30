@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { ShoppingCartIcon } from "lucide-react";
 
 import { DashboardGuard } from "@/features/dashboard/DashboardGuard";
-import { ComingSoon } from "@/features/dashboard/components/ComingSoon";
+import { AdminOrdersView } from "@/features/dashboard/components/AdminOrdersView";
 
 export const metadata: Metadata = {
   title: "Pedidos",
@@ -11,11 +10,7 @@ export const metadata: Metadata = {
 export default function DashboardOrdersPage() {
   return (
     <DashboardGuard>
-      <ComingSoon
-        icon={ShoppingCartIcon}
-        title="Pedidos"
-        description="Aquí podrás consultar las órdenes de compra, sus estados y el historial de envíos cuando el API esté disponible."
-      />
+      <AdminOrdersView />
     </DashboardGuard>
   );
 }

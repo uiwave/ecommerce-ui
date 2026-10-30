@@ -5,6 +5,17 @@ const dateTimeFormatter = new Intl.DateTimeFormat("es", {
   timeStyle: "short",
 });
 
+const currencyFormatter = new Intl.NumberFormat("es-PE", {
+  style: "currency",
+  currency: "PEN",
+  minimumFractionDigits: 2,
+});
+
+export function formatCurrency(value: number | string): string {
+  const amount = typeof value === "string" ? Number(value) : value;
+  return Number.isFinite(amount) ? currencyFormatter.format(amount) : "—";
+}
+
 export function formatDateTime(value: string): string {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? value : dateTimeFormatter.format(date);

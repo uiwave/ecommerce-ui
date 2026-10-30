@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   Command,
@@ -91,7 +91,6 @@ const data = {
 }
 
 export function AppSidebar() {
-  const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);

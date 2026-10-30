@@ -4,14 +4,19 @@ Interfaz web del e-commerce de Uiwave, construida con **Next.js 16 (App Router)*
 
 ## Funcionalidades
 
-- **Registro** de usuarios (`POST /api/auth/register`) con validación espejo de las reglas del backend.
-- **Inicio de sesión** (`POST /api/auth/login`) con access token + refresh token.
-- **Sesión persistente** con renovación automática del access token (`POST /api/auth/refresh`) y reintento de la petición original ante un `401`.
-- **Cierre de sesión** con revocación del refresh token (`POST /api/auth/logout`).
-- **Mi cuenta**: perfil del usuario autenticado (`GET /api/auth/me`).
-- **Panel de administración**: acceso exclusivo para rol `ADMIN` (`GET /api/admin/hello`).
-- **Modo oscuro** con `next-themes` (sistema/claro/oscuro, sin parpadeo).
-- Manejo tipado de errores del backend (`400`, `401`, `403`, `409`, `500`) y toasts con Sonner.
+- **Autenticación completa**: registro, login, refresh con rotación, logout y perfil (`/api/auth/*`).
+- **Catálogo público**: listado paginado con buscador y filtro por categoría, y detalle por slug (`/productos`, `/productos/[slug]`).
+- **Carrito persistente en servidor**: agregar, actualizar cantidades, quitar y vaciar (`/api/cart`), con contador en el navbar.
+- **Checkout transaccional**: crea el pedido, valida y descuenta stock, y vacía el carrito (`POST /api/orders`).
+- **Mis pedidos**: historial y detalle con estado (`/pedidos`, `/pedidos/[id]`).
+- **Panel de administración** (rol `ADMIN`) con sidebar:
+  - **General**: métricas (ingresos, pedidos, productos, usuarios), gráfico de ventas de 7 días, stock bajo y pedidos recientes.
+  - **Productos**: CRUD completo, baja lógica, búsqueda y filtros por categoría/estado, y gestión de categorías (crear/editar/eliminar).
+  - **Pedidos**: búsqueda por cliente, filtro por estado y transiciones `PENDING → PAID → SHIPPED → DELIVERED` (o `CANCELLED`).
+  - **Clientes**: búsqueda, filtro por rol, cambio de rol y activación/desactivación de cuentas.
+  - **Sistema**: estado de la API.
+- **Modo oscuro** con `next-themes`, estados de carga/error/vacío y toasts con Sonner.
+- **Estado del servidor con TanStack Query** (caché, reintentos e invalidación tras mutaciones).
 
 ## Requisitos
 
@@ -57,16 +62,17 @@ Interfaz web del e-commerce de Uiwave, construida con **Next.js 16 (App Router)*
 ```
 src/app/                    Rutas (Server Components por defecto)
 ├── (auth)/                 Login y registro con layout centrado
-├── (shop)/                 Tienda: Inicio y Mi cuenta con Navbar
-├── dashboard/              Panel admin con sidebar: General, Sistema y módulos futuros
+├── (shop)/                 Tienda: Inicio, Productos, Carrito, Checkout, Pedidos y Cuenta
+├── dashboard/              Panel admin con sidebar: General, Productos, Pedidos, Clientes y Sistema
 ├── admin/page.tsx          Redirección heredada a /dashboard
-├── layout.tsx              Providers (tema + auth), fuentes, Toaster
+├── layout.tsx              Providers (tema + React Query + auth), fuentes, Toaster
 ├── error.tsx               Error boundary global
 ├── loading.tsx             Skeleton de carga
 └── not-found.tsx           404
 
 src/components/
 ├── ui/                     Primitivos shadcn/ui (Radix, Tailwind v4)
+├── providers/              QueryProvider (TanStack Query)
 ├── layout/                 Navbar, Brand, ThemeProvider, ThemeToggle
 ├── auth/                   PasswordInput
 └── landing/                Hero, FeatureGrid, EndpointList  (el Hero es client)
@@ -74,14 +80,22 @@ src/components/
 src/features/
 ├── auth/                   AuthProvider, useAuth, RequireAuth, schemas zod, formularios
 ├── account/                Vista de perfil
-└── dashboard/              Guard ADMIN, sidebar, shell, General y Sistema
+├── catalog/                Grid de productos, buscador, filtros y detalle
+├── cart/                   Hook add-to-cart, botón con contador y vista del carrito
+├── checkout/               Formulario de envío (zod) y creación del pedido
+├── orders/                 Mis pedidos, detalle y badge de estado
+└── dashboard/              Guard ADMIN, sidebar, shell, métricas, productos, pedidos y clientes
 
 src/lib/
 ├── api/client.ts           Cliente HTTP único: Bearer, refresh con rotación, 401
 ├── api/auth.api.ts         Endpoints de autenticación/administración
+├── api/catalog.api.ts      Categorías y productos (público)
+├── api/cart.api.ts         Carrito del usuario
+├── api/orders.api.ts       Checkout y pedidos propios
+├── api/admin.api.ts        CRUD admin, pedidos y estadísticas
 ├── api/errors.ts           ApiError tipado desde el ErrorResponse del backend
 ├── config.ts               NEXT_PUBLIC_API_URL
-├── format.ts               Fechas, roles e iniciales
+├── format.ts               Fechas, moneda, roles e iniciales
 └── types.ts                Contratos de la API
 ```
 

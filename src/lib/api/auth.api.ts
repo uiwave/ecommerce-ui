@@ -34,7 +34,6 @@ export const authApi = {
   me(): Promise<UserResponse> {
     return apiRequest<UserResponse>("/api/auth/me", { auth: true });
   },
-
   logout(): Promise<void> {
     return apiRequest<void>("/api/auth/logout", {
       method: "POST",
