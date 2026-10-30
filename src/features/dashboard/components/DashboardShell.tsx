@@ -16,8 +16,10 @@ const SECTION_TITLES: Record<string, string> = {
   "/dashboard": "General",
   "/dashboard/sistema": "Sistema",
   "/dashboard/productos": "Productos",
+  "/dashboard/inventario": "Inventario",
   "/dashboard/pedidos": "Pedidos",
   "/dashboard/clientes": "Clientes",
+  "/dashboard/configuracion": "Configuración",
 };
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {

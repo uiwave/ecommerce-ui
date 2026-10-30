@@ -140,3 +140,19 @@ export interface LowStockProductResponse {
   name: string;
   stock: number;
 }
+
+// ------------------------------------------------------------ configuración
+
+export interface SiteSettingResponse {
+  id: number;
+  siteName: string;
+  logoUrl?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  currency: string;
+  lowStockThreshold: number;
+  freeShippingThreshold?: number | null;
+  taxRate: number;
+  shippingFlatRate: number;
+  updatedAt: string;
+}

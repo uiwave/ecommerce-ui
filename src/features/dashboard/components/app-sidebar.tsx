@@ -31,64 +31,45 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: LayoutDashboard,
-      isActive: true,
-      items: [
-        { title: "General", url: "/dashboard" }
-      ]
+      items: [{ title: "General", url: "/dashboard" }],
     },
     {
       title: "Catálogo",
-      url: "#",
+      url: "/dashboard/productos",
       icon: Package,
       items: [
-        { title: "Productos", url: "#" },
-        { title: "Categorías", url: "#" },
-        { title: "Inventario", url: "#" }
-      ]
+        { title: "Productos", url: "/dashboard/productos" },
+        { title: "Inventario", url: "/dashboard/inventario" },
+      ],
     },
     {
       title: "Operaciones",
-      url: "#",
+      url: "/dashboard/pedidos",
       icon: ShoppingCart,
-      items: [
-        { title: "Pedidos", url: "#" },
-        { title: "Envíos", url: "#" },
-        { title: "Descuentos", url: "#" }
-      ]
+      items: [{ title: "Pedidos", url: "/dashboard/pedidos" }],
     },
     {
       title: "Clientes",
-      url: "#",
+      url: "/dashboard/clientes",
       icon: Users,
-      items: [
-        { title: "Clientes", url: "#" },
-        { title: "Reseñas", url: "#" },
-      ]
+      items: [{ title: "Clientes", url: "/dashboard/clientes" }],
     },
     {
       title: "Configuración",
-      url: "#",
+      url: "/dashboard/configuracion",
       icon: Settings,
-      items: [
-        { title: "General", url: "#" },
-        { title: "Pagos", url: "#" },
-        { title: "Impuestos", url: "#" },
-        { title: "Usuarios", url: "#" },
-      ]
+      items: [{ title: "General", url: "/dashboard/configuracion" }],
     },
     {
       title: "Administración",
-      url: "#",
+      url: "/dashboard/sistema",
       icon: ShieldAlert,
-      items: [
-        { title: "Clientes", url: "/dashboard/clientes" },
-        { title: "Sistema", url: "/dashboard/sistema" }
-      ]
-    }
-  ]
-}
+      items: [{ title: "Sistema", url: "/dashboard/sistema" }],
+    },
+  ],
+};
 
 export function AppSidebar() {
   const router = useRouter();

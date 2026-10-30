@@ -11,7 +11,12 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { authApi, type LoginPayload, type RegisterPayload } from "@/lib/api/auth.api";
+import {
+  authApi,
+  type LoginPayload,
+  type RegisterPayload,
+  type UpdateProfilePayload,
+} from "@/lib/api/auth.api";
 import {
   AUTH_SESSION_EXPIRED_EVENT,
   tokenStorage,
@@ -24,6 +29,7 @@ export interface AuthContextValue {
   isAuthenticated: boolean;
   login: (payload: LoginPayload) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
+  updateProfile: (payload: UpdateProfilePayload) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -105,6 +111,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [applyAuthResponse],
   );
 
+  const updateProfile = useCallback(async (payload: UpdateProfilePayload) => {
+    const updatedUser = await authApi.updateMe(payload);
+    setUser(updatedUser);
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       if (tokenStorage.getRefreshToken()) {
@@ -125,9 +136,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAuthenticated: user !== null,
       login,
       register,
+      updateProfile,
       logout,
     }),
-    [user, isLoading, login, register, logout],
+    [user, isLoading, login, register, updateProfile, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

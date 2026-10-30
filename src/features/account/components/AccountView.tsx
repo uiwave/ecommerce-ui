@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import {
   CalendarDaysIcon,
+  CircleAlertIcon,
   Loader2Icon,
   LogOutIcon,
   MailIcon,
@@ -12,6 +15,8 @@ import {
   UserRoundIcon,
 } from "lucide-react";
 
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,16 +27,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import {
+  updateProfileSchema,
+  type UpdateProfileValues,
+} from "@/features/auth/schemas";
 import { useAuth } from "@/features/auth/useAuth";
+import { ApiError } from "@/lib/api/errors";
 import { formatDateTime, formatRole, getInitials } from "@/lib/format";
 
+const FIELD_NAMES = ["fullName", "imageUrl"] as const;
+
 export function AccountView() {
-  const { user, logout } = useAuth();
+  const { user, updateProfile, logout } = useAuth();
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
+
+  const form = useForm<UpdateProfileValues>({
+    resolver: zodResolver(updateProfileSchema),
+    defaultValues: {
+      fullName: user?.fullName ?? "",
+      imageUrl: user?.imageUrl ?? "",
+    },
+  });
+
+  const imagePreview = useWatch({ control: form.control, name: "imageUrl" });
 
   if (!user) return null;
+
+  const initials = getInitials(user.fullName, user.email);
 
   async function handleLogout() {
     setIsLoggingOut(true);
@@ -46,25 +79,61 @@ export function AccountView() {
     }
   }
 
+  async function onSubmit(values: UpdateProfileValues) {
+    setServerError(null);
+
+    try {
+      await updateProfile({
+        fullName: values.fullName,
+        imageUrl: values.imageUrl ?? "",
+      });
+      toast.success("Perfil actualizado correctamente");
+      form.reset({ fullName: values.fullName, imageUrl: values.imageUrl ?? "" });
+    } catch (error) {
+      if (error instanceof ApiError) {
+        let hasFieldError = false;
+
+        if (error.details) {
+          for (const field of FIELD_NAMES) {
+            const message = error.details[field];
+            if (message) {
+              form.setError(field, { type: "server", message });
+              hasFieldError = true;
+            }
+          }
+        }
+
+        if (!hasFieldError) {
+          setServerError(error.message);
+        }
+      } else {
+        setServerError("Ocurrió un error inesperado. Inténtalo de nuevo.");
+      }
+    }
+  }
+
+  const {
+    formState: { errors, isSubmitting },
+  } = form;
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Mi cuenta</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Datos de tu perfil obtenidos desde{" "}
-          <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">
-            GET /api/auth/me
-          </code>
-          .
+          Gestiona tus datos de perfil.
         </p>
       </div>
 
       <Card>
         <CardHeader>
           <div className="flex items-center gap-4">
-            <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground">
-              {getInitials(user.fullName, user.email)}
-            </span>
+            <Avatar className="size-14">
+              <AvatarImage src={user.imageUrl || undefined} alt={user.fullName} />
+              <AvatarFallback className="bg-primary text-lg font-semibold text-primary-foreground">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
             <div className="min-w-0">
               <CardTitle className="truncate text-lg">{user.fullName}</CardTitle>
               <CardDescription className="truncate">
@@ -131,6 +200,76 @@ export function AccountView() {
             Cerrar sesión
           </Button>
         </CardFooter>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Editar perfil</CardTitle>
+          <CardDescription>
+            Actualiza tu nombre y la imagen que se muestra en tu cuenta.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+            <FieldGroup>
+              {serverError && (
+                <Alert variant="destructive">
+                  <CircleAlertIcon />
+                  <AlertDescription>{serverError}</AlertDescription>
+                </Alert>
+              )}
+
+              <div className="flex items-center gap-4">
+                <Avatar className="size-14">
+                  <AvatarImage
+                    src={imagePreview || undefined}
+                    alt="Vista previa del avatar"
+                  />
+                  <AvatarFallback className="bg-primary text-lg font-semibold text-primary-foreground">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <Field data-invalid={Boolean(errors.imageUrl)}>
+                    <FieldLabel htmlFor="imageUrl">URL de la imagen</FieldLabel>
+                    <Input
+                      id="imageUrl"
+                      type="url"
+                      placeholder="https://ejemplo.com/avatar.jpg"
+                      autoComplete="url"
+                      aria-invalid={Boolean(errors.imageUrl)}
+                      {...form.register("imageUrl")}
+                    />
+                    <FieldDescription>
+                      Opcional. Debe ser una URL http(s) válida.
+                    </FieldDescription>
+                    <FieldError errors={[errors.imageUrl]} />
+                  </Field>
+                </div>
+              </div>
+
+              <Field data-invalid={Boolean(errors.fullName)}>
+                <FieldLabel htmlFor="fullName">Nombre completo</FieldLabel>
+                <Input
+                  id="fullName"
+                  type="text"
+                  placeholder="Nombre y apellidos"
+                  autoComplete="name"
+                  aria-invalid={Boolean(errors.fullName)}
+                  {...form.register("fullName")}
+                />
+                <FieldError errors={[errors.fullName]} />
+              </Field>
+
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <Loader2Icon className="animate-spin" />
+                ) : null}
+                Guardar cambios
+              </Button>
+            </FieldGroup>
+          </form>
+        </CardContent>
       </Card>
     </div>
   );

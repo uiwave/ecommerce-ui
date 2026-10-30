@@ -29,5 +29,23 @@ export const registerSchema = z.object({
     .max(72, "La contraseña debe tener entre 8 y 72 caracteres"),
 });
 
+export const updateProfileSchema = z.object({
+  fullName: z
+    .string()
+    .min(1, "El nombre es obligatorio")
+    .max(120, "El nombre no puede superar los 120 caracteres"),
+  imageUrl: z
+    .string()
+    .max(500, "La URL de la imagen no puede superar los 500 caracteres")
+    .refine(
+      (value) =>
+        value === "" ||
+        (z.url().safeParse(value).success && /^https?:\/\//i.test(value)),
+      "La imagen debe ser una URL http(s) válida",
+    )
+    .optional(),
+});
+
 export type LoginValues = z.infer<typeof loginSchema>;
 export type RegisterValues = z.infer<typeof registerSchema>;
+export type UpdateProfileValues = z.infer<typeof updateProfileSchema>;

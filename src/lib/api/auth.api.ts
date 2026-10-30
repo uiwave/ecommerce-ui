@@ -12,6 +12,11 @@ export interface RegisterPayload {
   fullName: string;
 }
 
+export interface UpdateProfilePayload {
+  fullName: string;
+  imageUrl?: string;
+}
+
 /**
  * Única puerta de entrada a los endpoints de autenticación y administración.
  * El refresh de tokens se gestiona de forma transparente en `client.ts`.
@@ -34,6 +39,15 @@ export const authApi = {
   me(): Promise<UserResponse> {
     return apiRequest<UserResponse>("/api/auth/me", { auth: true });
   },
+
+  updateMe(payload: UpdateProfilePayload): Promise<UserResponse> {
+    return apiRequest<UserResponse>("/api/auth/me", {
+      method: "PUT",
+      auth: true,
+      body: payload,
+    });
+  },
+
   logout(): Promise<void> {
     return apiRequest<void>("/api/auth/logout", {
       method: "POST",

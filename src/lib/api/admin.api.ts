@@ -7,6 +7,7 @@ import type {
   PageResponse,
   ProductResponse,
   Role,
+  SiteSettingResponse,
   UserResponse,
 } from "@/lib/types";
 
@@ -45,6 +46,18 @@ export interface AdminUserFilters {
 export interface UpdateUserPayload {
   role?: Role;
   enabled?: boolean;
+}
+
+export interface SiteSettingPayload {
+  siteName: string;
+  logoUrl?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  currency: string;
+  lowStockThreshold: number;
+  freeShippingThreshold?: number | null;
+  taxRate: number;
+  shippingFlatRate: number;
 }
 
 export const adminApi = {
@@ -89,6 +102,14 @@ export const adminApi = {
     return apiRequest<void>(`/api/admin/products/${id}`, {
       method: "DELETE",
       auth: true,
+    });
+  },
+
+  adjustStock(id: number, newStock: number): Promise<ProductResponse> {
+    return apiRequest<ProductResponse>(`/api/admin/products/${id}/stock`, {
+      method: "PATCH",
+      auth: true,
+      body: { newStock },
     });
   },
 
@@ -183,5 +204,20 @@ export const adminApi = {
 
   stats(): Promise<OrderStatsResponse> {
     return apiRequest<OrderStatsResponse>("/api/admin/stats", { auth: true });
+  },
+
+  // Configuración
+  settings(): Promise<SiteSettingResponse> {
+    return apiRequest<SiteSettingResponse>("/api/admin/settings", {
+      auth: true,
+    });
+  },
+
+  updateSettings(payload: SiteSettingPayload): Promise<SiteSettingResponse> {
+    return apiRequest<SiteSettingResponse>("/api/admin/settings", {
+      method: "PUT",
+      auth: true,
+      body: payload,
+    });
   },
 };
